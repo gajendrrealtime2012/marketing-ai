@@ -45,7 +45,7 @@ const firestoreDBServiceAccount = require(path_1.default.resolve(__dirname, "./m
 if (!admin.apps.length) {
     admin.initializeApp({
         credential: admin.credential.cert(firestoreDBServiceAccount),
-        databaseURL: process.env.FIREBASE_DATABASE_URL,
+        // databaseURL: process.env.FIREBASE_DATABASE_URL,
     });
     console.log("Firebase initialized");
 }
