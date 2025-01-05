@@ -1,9 +1,6 @@
 import { Request, Response } from "express";
 import { db } from "../config/db";
-
-interface Seed {
-  id: string;
-}
+import { Seed } from "../models/Seed";
 
 // Get all seeds
 export const getAllSeeds = async (
@@ -37,7 +34,8 @@ export const createSeed = async (
   res: Response
 ): Promise<Response> => {
   try {
-    const newSeedData: Omit<Seed, "created_at" | "updated_at"> = req.body;
+    const newSeedData: Omit<Seed, "id" | "created_at" | "updated_at"> =
+      req.body;
     const seedRef = db.collection("seeds").doc();
     await seedRef.set({
       ...newSeedData,

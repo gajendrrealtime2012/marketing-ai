@@ -9,7 +9,7 @@ const vertexAIClient = new VertexAI({
 });
 
 const generativeModel = vertexAIClient.preview.getGenerativeModel({
-  model: process.env.MODEL_NAME as string,
+  model: "gemini-1.5-pro-002",
   generationConfig: {
     maxOutputTokens: 8192,
     temperature: 0.2,

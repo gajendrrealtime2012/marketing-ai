@@ -10,9 +10,8 @@ const vertex_ai = new vertexai_1.VertexAI({
     project: process.env.GCP_TUNED_MODEL_PROJECT_ID,
     location: process.env.GCP_TUNED_MODEL_LOCATION,
 });
-const model = process.env.GCP_TUNED_MODEL;
 const generativeTunedModel = vertex_ai.preview.getGenerativeModel({
-    model: model,
+    model: "projects/322771814595/locations/us-central1/endpoints/6945510499056353280",
     generationConfig: {
         maxOutputTokens: 8192,
         temperature: 0.5,

@@ -1,9 +1,6 @@
 import { Request, Response } from "express";
 import { db } from "../config/db";
-
-interface OutputType {
-  id: string;
-}
+import { OutputType } from "../models/OutputType";
 
 export const getAllOutputTypes = async (
   req: Request,
@@ -35,8 +32,10 @@ export const createOutputType = async (
   res: Response
 ): Promise<Response> => {
   try {
-    const newOutputTypeData: Omit<OutputType, "created_at" | "updated_at"> =
-      req.body;
+    const newOutputTypeData: Omit<
+      OutputType,
+      "id" | "created_at" | "updated_at"
+    > = req.body;
 
     const outputTypeRef = db.collection("outputTypes").doc();
     await outputTypeRef.set({

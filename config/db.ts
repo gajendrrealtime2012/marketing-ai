@@ -4,7 +4,7 @@ import path from "path";
 dotenv.config();
 const firestoreDBServiceAccount = require(path.resolve(
   __dirname,
-  "./marketingai-db-firebase-adminsdk-q9xbn-a5ecea4edf.json"
+  "./marketingai-db-firestore-service-account.json"
 ));
 
 if (!admin.apps.length) {

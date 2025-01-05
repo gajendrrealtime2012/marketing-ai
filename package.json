@@ -1,0 +1,33 @@
+{
+  "dependencies": {
+    "@google-cloud/aiplatform": "^3.34.0",
+    "@google-cloud/firestore": "^7.11.0",
+    "@google-cloud/storage": "^7.14.0",
+    "@google-cloud/vertexai": "^1.9.2",
+    "axios": "^1.7.9",
+    "body-parser": "^1.20.3",
+    "dotenv": "^16.4.7",
+    "express": "^4.21.2",
+    "firebase-admin": "^13.0.2",
+    "google-auth-library": "^9.15.0",
+    "nodemon": "^3.1.9"
+  },
+  "devDependencies": {
+    "@types/express": "^4.17.21",
+    "@types/node": "^20.17.11",
+    "ts-node": "^10.9.2",
+    "ts-node-dev": "^2.0.0",
+    "typescript": "^5.7.2"
+  },
+  "scripts": {
+    "start:dev": "ts-node-dev --respawn server.ts",
+    "start:node": "nodemon --watch src --ext ts --exec ts-node ./server.ts",
+    "build": "tsc && cp marketingai-db-firestore-service-account.json dist/config/",
+    "start": "node dist/server.js"
+  },
+  "name": "marketing-ai",
+  "version": "1.0.0",
+  "main": "dist/index.js",
+  "license": "ISC",
+  "description": ""
+}

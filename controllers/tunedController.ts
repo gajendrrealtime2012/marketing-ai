@@ -1,25 +1,25 @@
 import { Request, Response } from "express";
 import { db } from "../config/db";
-import { Persona } from "../models/Persona";
+import { Tuned } from "../models/Tuned";
 
-// Get all personas
-export const getAllPersonas = async (
+// Get all tuned data
+export const getAllTunedData = async (
   req: Request,
   res: Response
 ): Promise<Response> => {
   try {
-    const personasRef = db.collection("personas");
-    const snapshot = await personasRef.get();
+    const tunedDataRef = db.collection("tuneds");
+    const snapshot = await tunedDataRef.get();
 
     if (snapshot.empty) {
-      return res.status(404).json({ message: "No personas found" });
+      return res.status(404).json({ message: "No tuned data found" });
     }
 
-    const personas: Persona[] = snapshot.docs.map((doc) => ({
+    const tunedData: Tuned[] = snapshot.docs.map((doc) => ({
       id: doc.id,
       ...doc.data(),
-    })) as Persona[];
-    return res.status(200).json(personas);
+    })) as Tuned[];
+    return res.status(200).json(tunedData);
   } catch (error: unknown) {
     if (error instanceof Error) {
       return res.status(500).json({ error: error.message });
@@ -28,23 +28,22 @@ export const getAllPersonas = async (
   }
 };
 
-// Create a new persona
-export const createPersona = async (
+// Save tuned data
+export const saveTunedData = async (
   req: Request,
   res: Response
 ): Promise<Response> => {
   try {
-    const newPersonaData: Omit<Persona, "id" | "created_at" | "updated_at"> =
+    const newTunedData: Omit<Tuned, "id" | "created_at" | "updated_at"> =
       req.body;
-
-    const personaRef = db.collection("personas").doc();
-    await personaRef.set({
-      ...newPersonaData,
+    const tunedDataRef = db.collection("tuneds").doc();
+    await tunedDataRef.set({
+      ...newTunedData,
       created_at: new Date(),
       updated_at: new Date(),
     });
 
-    return res.status(201).json({ message: "Persona created successfully" });
+    return res.status(201).json({ message: "Tuned data saved successfully" });
   } catch (error: unknown) {
     if (error instanceof Error) {
       return res.status(500).json({ error: error.message });

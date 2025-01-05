@@ -1,0 +1,12 @@
+{
+  "compilerOptions": {
+    "module": "commonjs",          // or another module system you're using
+    "esModuleInterop": true,       // Ensures compatibility with non-ESM modules
+    "resolveJsonModule": true,     // Enable importing JSON modules
+    "outDir": "dist",            // Output directory for compiled files
+    "strict": true,                // Optional, enables strict type-checking
+    "target": "ES2015" 
+  },
+  "include": ["**/*.ts"],
+  "exclude": ["dist", "node_modules"]
+}

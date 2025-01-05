@@ -11,7 +11,7 @@ const vertexAIClient = new vertexai_1.VertexAI({
     location: process.env.GCP_LOCATION,
 });
 const generativeModel = vertexAIClient.preview.getGenerativeModel({
-    model: process.env.MODEL_NAME,
+    model: "gemini-1.5-pro-002",
     generationConfig: {
         maxOutputTokens: 8192,
         temperature: 0.2,

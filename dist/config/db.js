@@ -41,11 +41,10 @@ const admin = __importStar(require("firebase-admin"));
 const dotenv_1 = __importDefault(require("dotenv"));
 const path_1 = __importDefault(require("path"));
 dotenv_1.default.config();
-const firestoreDBServiceAccount = require(path_1.default.resolve(__dirname, "./marketingai-db-firebase-adminsdk-q9xbn-a5ecea4edf.json"));
+const firestoreDBServiceAccount = require(path_1.default.resolve(__dirname, "./marketingai-db-firestore-service-account.json"));
 if (!admin.apps.length) {
     admin.initializeApp({
         credential: admin.credential.cert(firestoreDBServiceAccount),
-        // databaseURL: process.env.FIREBASE_DATABASE_URL,
     });
     console.log("Firebase initialized");
 }

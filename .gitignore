@@ -1,4 +1,6 @@
 /node_modules
-
-*.json
 .env
+/dist
+
+marketing-ai-445804-08fdf5f6aa4a.json
+marketingai-db-firestore-service-account.json
