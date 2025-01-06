@@ -269,3 +269,225 @@ export const tuneByAllThreeContent = async (
     return res.status(500).json({ error: "Failed to tune content" });
   }
 };
+
+
+export const tuneByAllThreeContent = async (
+  req: Request,
+  res: Response
+): Promise<Response> => {
+  const { personaId, outputTypeId, seedId } = req.body;
+
+  if (!personaId || !outputTypeId || !seedId) {
+    return res
+      .status(400)
+      .json({ error: "ID for persona, output_type, and seed are required." });
+  }
+
+  const personasRef = db.collection("personas").doc(personaId);
+  const snapshotPersona = await personasRef.get();
+
+  if (!snapshotPersona.exists) {
+    return res.status(404).json({ message: "No personas found" });
+  }
+
+  const seedsRef = db.collection("seeds").doc(seedId);
+  const snapshotSeed = await seedsRef.get();
+
+  if (!snapshotSeed.exists) {
+    return res.status(404).json({ message: "No seeds found" });
+  }
+
+  const outputTypeRef = db.collection("outputTypes").doc(outputTypeId);
+  const snapshotOutputType = await outputTypeRef.get();
+
+  if (!snapshotOutputType.exists) {
+    return res.status(404).json({ message: "No output type found" });
+  }
+
+  const persona = snapshotPersona.data();
+  const output_type = snapshotOutputType.data();
+  const seed = snapshotSeed.data();
+  try {
+    const prompt =
+      output_type && persona && seed
+        ? {
+            text: `Persona: ${persona.name}
+          Description: ${persona.description}
+          Instructions: ${persona.instructions}
+    
+          Output Type: ${output_type.output_type_name}
+          Description: ${output_type.description}
+          Sections:
+          ${output_type.sections
+            .map(
+              (section: Section, index: number) =>
+                `${index + 1}. ${section.name} - ${section.instruction}`
+            )
+            .join("\n")}
+    
+          Seed Data:
+          Seed URL: ${seed.seed_url}
+          Description: ${seed.seed}`,
+          }
+        : {
+            text: "Persona, Output type & Seed Data is unavailable",
+          };
+
+    const chat = generativeTunedModel.startChat({});
+    const streamResult = await chat.sendMessageStream([prompt]);
+    const generatedText = (await streamResult.response).candidates[0].content
+      .parts[0].text;
+
+    return res.status(200).json({ data: generatedText });
+  } catch (error) {
+    console.error("Error tuning content:", error);
+    return res.status(500).json({ error: "Failed to tune content" });
+  }
+};
+
+export const tuneAllBySingleSection = async (
+  req: Request,
+  res: Response
+): Promise<Response> => {
+  const { personaId, outputTypeId, seedId, sectionName } = req.body;
+
+  if (!personaId || !outputTypeId || !seedId || !sectionName) {
+    return res.status(400).json({
+      error:
+        "ID for persona, output_type, seed, and section name are required.",
+    });
+  }
+
+  const personasRef = db.collection("personas").doc(personaId);
+  const snapshotPersona = await personasRef.get();
+
+  if (!snapshotPersona.exists) {
+    return res.status(404).json({ message: "No personas found" });
+  }
+
+  const seedsRef = db.collection("seeds").doc(seedId);
+  const snapshotSeed = await seedsRef.get();
+
+  if (!snapshotSeed.exists) {
+    return res.status(404).json({ message: "No seeds found" });
+  }
+
+  const outputTypeRef = db.collection("outputTypes").doc(outputTypeId);
+  const snapshotOutputType = await outputTypeRef.get();
+
+  if (!snapshotOutputType.exists) {
+    return res.status(404).json({ message: "No output type found" });
+  }
+
+  const persona = snapshotPersona.data();
+  const output_type = snapshotOutputType.data();
+  const seed = snapshotSeed.data();
+
+  try {
+    // Filter the sections array to include only the specified section
+    const filteredSections =
+      output_type?.sections?.filter(
+        (section: { name: string }) => section.name === sectionName
+      ) || [];
+
+    if (filteredSections.length === 0) {
+      return res.status(404).json({ message: "No matching section found" });
+    }
+
+    const prompt =
+      output_type && persona && seed
+        ? {
+            text: `Persona: ${persona.name}
+          Description: ${persona.description}
+          Instructions: ${persona.instructions}
+    
+          Output Type: ${output_type.output_type_name}
+          Description: ${output_type.description}
+          Sections:
+          ${filteredSections
+            .map(
+              (section: { name: string; instruction: string }, index: number) =>
+                `${index + 1}. ${section.name} - ${section.instruction}`
+            )
+            .join("\n")}
+    
+          Seed Data:
+          Seed URL: ${seed.seed_url}
+          Description: ${seed.seed}`,
+          }
+        : {
+            text: "Persona, Output type & Seed Data is unavailable",
+          };
+
+    const chat = generativeTunedModel.startChat({});
+    const streamResult = await chat.sendMessageStream([prompt]);
+    const generatedText = (await streamResult.response).candidates[0].content
+      .parts[0].text;
+
+    return res.status(200).json({ data: generatedText });
+  } catch (error) {
+    console.error("Error tuning content:", error);
+    return res.status(500).json({ error: "Failed to tune content" });
+  }
+};
+
+export const tuneBySingleSection = async (
+  req: Request,
+  res: Response
+): Promise<Response> => {
+  const { outputTypeId, sectionName } = req.body;
+
+  if (!outputTypeId || !sectionName) {
+    return res.status(400).json({
+      error: "ID for output_type and section name are required.",
+    });
+  }
+
+  const outputTypeRef = db.collection("outputTypes").doc(outputTypeId);
+  const snapshotOutputType = await outputTypeRef.get();
+
+  if (!snapshotOutputType.exists) {
+    return res.status(404).json({ message: "No output type found" });
+  }
+
+  const output_type = snapshotOutputType.data();
+
+  try {
+    const filteredSections =
+      output_type?.sections?.filter(
+        (section: { name: string }) => section.name === sectionName
+      ) || [];
+
+    if (filteredSections.length === 0) {
+      return res.status(404).json({ message: "No matching section found" });
+    }
+
+    const prompt = output_type
+      ? {
+          text: `
+          Output Type: ${output_type.output_type_name}
+          Description: ${output_type.description}
+          Sections:
+          ${filteredSections
+            .map(
+              (section: { name: string; instruction: string }, index: number) =>
+                `${index + 1}. ${section.name} - ${section.instruction}`
+            )
+            .join("\n")}`,
+        }
+      : {
+          text: "Persona, Output type & Seed Data is unavailable",
+        };
+
+    const chat = generativeTunedModel.startChat({});
+    const streamResult = await chat.sendMessageStream([prompt]);
+    const generatedText = (await streamResult.response).candidates[0].content
+      .parts[0].text;
+
+    return res.status(200).json({ data: generatedText });
+  } catch (error) {
+    console.error("Error tuning content:", error);
+    return res.status(500).json({ error: "Failed to tune content" });
+  }
+};
+
