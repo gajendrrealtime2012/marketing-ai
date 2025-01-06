@@ -2,10 +2,10 @@
 
 step 1: Clone the code repository
 step 2: RUN 'npm install'
-step 3: configure the project with google service account json files for vertexai service account(marketing-ai-445804-08fdf5f6aa4a.json) and for firestore service account(marketingai-db-firestore-service-account.json) in the main project root directory
-step 3: Set the env varaibles in .env variables and set the tuned model in config/vertexAITunedConfig.ts file
-step 3: RUN 'npm run build'
-step 4: RUN 'npm run start'
+step 4: configure the project with google service account json files for vertexai service account(marketing-ai-445804-08fdf5f6aa4a.json) and for firestore service account(marketingai-db-firestore-service-account.json) in the main project root directory
+step 5: Set the env varaibles in .env variables and set the tuned model in config/vertexAITunedConfig.ts file
+step 6: RUN 'npm run build'
+step 7: RUN 'npm run start'
 
 ---------------- Instructions to set up Google Project: ------------------------------------------------------------------------------------------------------------
 
