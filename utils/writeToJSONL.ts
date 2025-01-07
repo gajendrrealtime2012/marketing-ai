@@ -52,6 +52,9 @@ async function writeToJSONL(
   fileName: string = "datasets_marketing.jsonl"
 ): Promise<void> {
   try {
+    const modelText = (await response.response).candidates[0].content.parts[0]
+      .text;
+
     // Construct the JSON object
     const contents = {
       contents: [
@@ -60,32 +63,28 @@ async function writeToJSONL(
           parts: [
             {
               text: `Persona: ${persona.name}
-Description: ${persona.description}
-Instructions: ${persona.instructions}
-
-Output Type: ${output_type.output_type_name}
-Description: ${output_type.description}
-Sections:
-${output_type.sections
-  .map(
-    (section, index) => `${index + 1}. ${section.name} - ${section.instruction}`
-  )
-  .join("\n")}
-
-Seed Data:
-Seed URL: ${seed.seed_url}
-Description: ${seed.seed}`,
+  Description: ${persona.description}
+  Instructions: ${persona.instructions}
+  
+  Output Type: ${output_type.output_type_name}
+  Description: ${output_type.description}
+  Sections:
+  ${output_type.sections
+    .map(
+      (section, index) =>
+        `${index + 1}. ${section.name} - ${section.instruction}`
+    )
+    .join("\n")}
+  
+  Seed Data:
+  Seed URL: ${seed.seed_url}
+  Description: ${seed.seed}`,
             },
           ],
         },
         {
           role: "model",
-          parts: [
-            {
-              text: (await response.response).candidates[0].content.parts[0]
-                .text,
-            },
-          ],
+          parts: [{ text: modelText }],
         },
       ],
     };
@@ -99,7 +98,7 @@ Description: ${seed.seed}`,
     // Append the JSONL string to the file
     fs.appendFileSync(filePath, jsonlString + "\n", "utf8");
 
-    // console.log(`Data successfully written to ${fileName}`);
+    console.log(`Data successfully written to ${fileName}`);
   } catch (error) {
     if (error instanceof Error) {
       console.error(`Failed to write to JSONL file: ${error.message}`);
@@ -109,5 +108,4 @@ Description: ${seed.seed}`,
   }
 }
 
-// export default writeToJSONL;
 module.exports = writeToJSONL;
