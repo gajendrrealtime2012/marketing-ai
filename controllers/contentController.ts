@@ -53,7 +53,7 @@ export const generateContent = async (
     const prompt = generatePrompt(persona, output_type, seed);
     const response = await generativeModel.generateContentStream(prompt);
 
-        try {
+  try {
       await writeToJSONL(persona, output_type, seed, response);
       console.log("Data successfully written to JSONL.");
     } catch (writeError) {
